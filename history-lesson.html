@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two Rivers of Time — A History Lesson</title>
+<meta name="description" content="A vintage-style timeline of European and Chinese historical periods, from 1046 BC to AD 1991.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     Two Rivers of Time — a single-file history lesson
+     Vintage paper, ink, and two chronologies on one line.
+     ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --paper:      #efe5d1;
+    --paper-hi:   #f8f1e2;
+    --paper-lo:   #e5d7be;
+    --ink:        #2d241a;
+    --ink-soft:   #5b4a36;
+    --ink-faint:  #8c7557;
+    --line:       #c3ae8c;
+    --line-soft:  rgba(150, 125, 88, 0.34);
+    --eu:         #4e707c;
+    --eu-deep:    #33515b;
+    --cn:         #a4523a;
+    --cn-deep:    #7a3526;
+    --gold:       #b0894b;
+    --serif:      "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --antique:    "IM Fell English", "Cormorant Garamond", Georgia, serif;
+  }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    padding: 36px 16px 64px;
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink);
+    background:
+      radial-gradient(ellipse at 18% 0%, rgba(255, 255, 255, 0.35), transparent 60%),
+      radial-gradient(ellipse at 85% 100%, rgba(90, 70, 45, 0.25), transparent 60%),
+      #cdbb9d;
+    min-height: 100vh;
+  }
+
+  /* ---------- The sheet of paper ---------- */
+  .sheet {
+    position: relative;
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 48px 46px 34px;
+    background:
+      linear-gradient(160deg, rgba(255, 255, 255, 0.35), transparent 40%),
+      linear-gradient(0deg, rgba(120, 95, 60, 0.10), transparent 30%),
+      var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 0 #fff inset, 0 24px 60px rgba(60, 45, 25, 0.28), 0 3px 8px rgba(60, 45, 25, 0.18);
+  }
+  .sheet::before {
+    content: "";
+    position: absolute;
+    inset: 11px;
+    border: 1px solid var(--line-soft);
+    pointer-events: none;
+  }
+  .sheet::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='g' opacity='0.3'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+  }
+
+  /* ---------- Masthead ---------- */
+  .back {
+    position: absolute;
+    top: 20px;
+    left: 26px;
+    z-index: 4;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  .back:hover { color: var(--cn); border-bottom-color: var(--cn); }
+
+  .masthead { max-width: 820px; margin: 0 auto; padding-top: 20px; text-align: center; }
+  .kicker {
+    margin: 0 0 14px;
+    font-size: 0.69rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  h1 {
+    margin: 0;
+    font-family: var(--antique);
+    font-weight: 400;
+    font-size: clamp(2.3rem, 6vw, 3.9rem);
+    line-height: 1.04;
+    letter-spacing: 0.01em;
+  }
+  .deck {
+    max-width: 640px;
+    margin: 18px auto 0;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .flourish {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    max-width: 520px;
+    margin: 24px auto 0;
+    color: var(--gold);
+  }
+  .flourish span {
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(90deg, transparent, var(--line) 20%, var(--line) 80%, transparent);
+  }
+  .flourish b { font-size: 0.68rem; font-weight: 400; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  /* ---------- Board controls ---------- */
+  .board { margin-top: 24px; }
+  .board-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+  }
+  .legend { display: flex; gap: 22px; flex-wrap: wrap; }
+  .key {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.7rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .key i {
+    width: 13px;
+    height: 13px;
+    border: 1px solid var(--line);
+    display: inline-block;
+  }
+  .key i.eu { background: #d9e4e5; border-color: #8ba7b0; }
+  .key i.cn { background: #eed7c9; border-color: #c2987e; }
+  .key b { font-weight: 600; color: var(--ink-soft); }
+
+  .zoom {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.35);
+  }
+  .zoom button {
+    width: 32px;
+    height: 28px;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--antique);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .zoom button:hover { background: rgba(176, 137, 75, 0.2); }
+  .zoom button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+  .zoom span {
+    min-width: 52px;
+    padding: 0 6px;
+    text-align: center;
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Scroll area & canvas ---------- */
+  .scroller {
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(120, 95, 60, 0.05));
+    scrollbar-width: thin;
+    scrollbar-color: #b8a37d rgba(150, 125, 88, 0.14);
+  }
+  .scroller::-webkit-scrollbar { height: 10px; }
+  .scroller::-webkit-scrollbar-track { background: rgba(150, 125, 88, 0.14); }
+  .scroller::-webkit-scrollbar-thumb { background: #b8a37d; border: 2px solid #ece1ca; border-radius: 6px; }
+
+  /* a paper fade hints that the river continues to the right */
+  .scroll-wrap { position: relative; }
+  .scroll-wrap::after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    bottom: 11px;
+    width: 54px;
+    pointer-events: none;
+    z-index: 9;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    background: linear-gradient(270deg, rgba(239, 229, 209, 0.92), rgba(239, 229, 209, 0));
+  }
+  .scroll-wrap.can-right::after { opacity: 1; }
+
+  .canvas { position: relative; }
+
+  /* era ribbons */
+  .era {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px dashed var(--line-soft);
+    background: rgba(94, 112, 124, 0.05);
+  }
+  .era.alt { background: rgba(164, 82, 58, 0.05); }
+  .era span {
+    position: sticky;
+    left: 10px;
+    display: inline-block;
+    margin: 10px 0 0 10px;
+    font-size: 0.6rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  /* century grid */
+  .grid {
+    position: absolute;
+    width: 1px;
+    background: linear-gradient(180deg, rgba(150, 125, 88, 0.16), rgba(150, 125, 88, 0.05));
+    pointer-events: none;
+  }
+
+  /* the line itself */
+  .axis {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, #7c6549, #ab916d 50%, #7c6549);
+    box-shadow: 0 3px 0 -2px rgba(176, 137, 75, 0.7);
+  }
+  .cap {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    margin-left: -3px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+  .tick {
+    position: absolute;
+    width: 1px;
+    height: 9px;
+    background: #6d573f;
+    opacity: 0.75;
+  }
+  .tlabel {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 0.61rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  /* side captions */
+  .side {
+    position: absolute;
+    writing-mode: vertical-rl;
+    font-size: 0.6rem;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Period plaques ---------- */
+  .plaque {
+    position: absolute;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    border-radius: 2px;
+    cursor: default;
+    outline: none;
+    z-index: 1;
+    transition: transform 0.16s ease, box-shadow 0.16s ease;
+  }
+  /* the caption stays in view while a long bar scrolls past */
+  .pl-inner {
+    position: sticky;
+    left: 9px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    max-width: 100%;
+    padding: 0 8px 2px 6px;
+  }
+  .plaque:hover,
+  .plaque:focus-visible {
+    transform: translateY(-3px);
+    z-index: 6;
+    box-shadow: 0 8px 16px rgba(60, 45, 25, 0.26);
+  }
+  .plaque.eu {
+    background: linear-gradient(180deg, #e3ecee, #d2dee0);
+    border: 1px solid #8ba7b0;
+    border-left: 3px solid var(--eu-deep);
+    color: #2a414a;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+  .plaque.cn {
+    background: linear-gradient(180deg, #f2dfd3, #e6cdbc);
+    border: 1px solid #c2987e;
+    border-left: 3px solid var(--cn-deep);
+    color: #4a2a1c;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  }
+  .pn {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pn em {
+    font-style: normal;
+    font-family: "Songti SC", "Noto Serif CJK SC", serif;
+    font-size: 11px;
+    opacity: 0.68;
+  }
+  .pd {
+    font-size: 8.5px;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(45, 36, 26, 0.66);
+    white-space: nowrap;
+  }
+  /* the true span, shown when a plaque is widened for legibility */
+  .sp {
+    position: absolute;
+    left: 0;
+    bottom: 3px;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, rgba(176, 137, 75, 0.85) 0 4px, transparent 4px 7px);
+  }
+
+  .hint {
+    margin: 12px 0 0;
+    text-align: center;
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Notes ---------- */
+  .notes {
+    max-width: 900px;
+    margin: 34px auto 0;
+    padding-top: 22px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .notes h2 {
+    margin: 0 0 12px;
+    font-family: var(--antique);
+    font-weight: 400;
+    font-size: 1.2rem;
+    letter-spacing: 0.02em;
+  }
+  .notes ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 42px;
+  }
+  .notes li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  .colophon {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 0.67rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    line-height: 2;
+  }
+  .colophon a { color: var(--ink-faint); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .colophon a:hover { color: var(--cn); border-bottom-color: var(--cn); }
+
+  /* ---------- Tooltip ---------- */
+  .tip {
+    position: fixed;
+    z-index: 60;
+    max-width: 260px;
+    padding: 12px 14px;
+    border: 1px solid #bda983;
+    border-radius: 2px;
+    background: #f7eedc;
+    box-shadow: 0 10px 24px rgba(60, 45, 25, 0.24);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.16s ease, transform 0.16s ease;
+    pointer-events: none;
+  }
+  .tip::before {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(150, 125, 88, 0.35);
+  }
+  .tip.on { opacity: 1; transform: none; }
+  .tip b {
+    display: block;
+    font-family: var(--antique);
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .tip span {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .tip em {
+    display: block;
+    margin-top: 7px;
+    font-style: normal;
+    font-size: 0.78rem;
+  }
+  .tip em.eu { color: var(--eu-deep); }
+  .tip em.cn { color: var(--cn-deep); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 820px) {
+    .sheet { padding: 38px 18px 26px; }
+    .back { position: static; display: inline-block; margin-bottom: 18px; }
+    .masthead { padding-top: 0; }
+    .deck { font-size: 1rem; }
+    .notes ul { grid-template-columns: 1fr; gap: 10px; }
+    .legend { gap: 14px; }
+  }
+  @media (max-width: 560px) {
+    body { padding: 10px 8px 40px; }
+    .sheet { padding: 30px 12px 22px; }
+    .key { font-size: 0.62rem; letter-spacing: 0.1em; }
+    h1 { font-size: 2.15rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+    .plaque:hover, .plaque:focus-visible { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <a class="back" href="projects.html">&larr; Projects</a>
+
+  <header class="masthead">
+    <p class="kicker">A History Lesson &middot; World Chronology</p>
+    <h1>Two Rivers of Time</h1>
+    <p class="deck">Europe above the line, China below — thirty-six dynasties, empires and republics, each set against the year it began.</p>
+  </header>
+
+  <div class="flourish" aria-hidden="true"><span></span><b>&#9670;</b><span></span></div>
+
+  <section class="board" aria-labelledby="boardTitle">
+    <div class="board-head">
+      <h2 id="boardTitle" class="sr-only">Timeline of European and Chinese historical periods</h2>
+      <div class="legend">
+        <span class="key"><i class="eu"></i><b>Europe</b> above the line</span>
+        <span class="key"><i class="cn"></i><b>China</b> below the line</span>
+      </div>
+      <div class="zoom" role="group" aria-label="Timeline zoom">
+        <button type="button" id="zOut" aria-label="Zoom out">&minus;</button>
+        <span id="zVal">100%</span>
+        <button type="button" id="zIn" aria-label="Zoom in">+</button>
+      </div>
+    </div>
+
+    <div class="scroll-wrap" id="scrollWrap">
+      <div class="scroller" id="scroller">
+        <div class="canvas" id="canvas"></div>
+      </div>
+    </div>
+
+    <p class="hint">Drag sideways to travel through time</p>
+  </section>
+
+  <section class="notes">
+    <h2>How to read the sheet</h2>
+    <ul>
+      <li>Every plaque begins at the exact year its period opened. When two labels would meet, the later one steps into another row — so nothing is ever covered.</li>
+      <li>Some plaques are drawn a little wider than their period so the name stays legible; the dotted gold rule beneath still marks the true span.</li>
+      <li>The scale is compressed through deep antiquity and opened out after 1500, so the crowded modern centuries have room to breathe.</li>
+      <li>A few periods genuinely overlap — the Zhou and the Roman Republic, for instance, were contemporaries for some two hundred and fifty years.</li>
+    </ul>
+  </section>
+
+  <footer class="colophon">
+    36 periods &middot; 3,037 years &middot; 1046 BC &ndash; AD 1991<br>
+    Compiled for EDS457 &middot; <a href="projects.html">return to projects</a>
+  </footer>
+</div>
+
+<div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ----------------------------------------------------------
+     Data
+     Years are integers; BC is negative. Soviet Union appears once.
+     ---------------------------------------------------------- */
+  const EUROPE = [
+    { name: "Roman Republic",          from: -509, to: -27 },
+    { name: "Western Roman Empire",     from: -27,  to: 476 },
+    { name: "Eastern Roman Empire",     from: 330,  to: 1453 },
+    { name: "Middle Ages",              from: 476,  to: 1453 },
+    { name: "Frankish Kingdom",         from: 481,  to: 843 },
+    { name: "Holy Roman Empire",        from: 962,  to: 1806 },
+    { name: "Duchy of Normandy",        from: 911,  to: 1204 },
+    { name: "Kingdom of England",       from: 927,  to: 1707 },
+    { name: "Kievan Rus'",              from: 882,  to: 1240 },
+    { name: "Grand Duchy of Moscow",    from: 1283, to: 1547 },
+    { name: "Ottoman Empire",           from: 1299, to: 1923 },
+    { name: "Spanish Empire",           from: 1492, to: 1898 },
+    { name: "Portuguese Empire",        from: 1415, to: 1999 },
+    { name: "Dutch Republic",           from: 1581, to: 1795 },
+    { name: "Commonwealth of England",  from: 1649, to: 1660 },
+    { name: "Tsardom of Russia",        from: 1547, to: 1721 },
+    { name: "Russian Empire",           from: 1721, to: 1917 },
+    { name: "First French Empire",      from: 1804, to: 1815 },
+    { name: "German Confederation",     from: 1815, to: 1866 },
+    { name: "Kingdom of Italy",         from: 1861, to: 1946 },
+    { name: "German Empire",            from: 1871, to: 1918 },
+    { name: "Austro-Hungarian Empire",  from: 1867, to: 1918 },
+    { name: "Soviet Union",             from: 1922, to: 1991 }
+  ];
+
+  const CHINA = [
+    { name: "Zhou",                         hz: "周",   from: -1046, to: -256 },
+    { name: "Qin",                          hz: "秦",   from: -221,  to: -207 },
+    { name: "Han",                          hz: "汉",   from: -202,  to: 220 },
+    { name: "Three Kingdoms",               hz: "三国", from: 220,   to: 280 },
+    { name: "Jin",                          hz: "晋",   from: 265,   to: 420 },
+    { name: "Northern and Southern Dynasties", hz: "南北朝", from: 420, to: 589 },
+    { name: "Sui",                          hz: "隋",   from: 581,   to: 618 },
+    { name: "Tang",                         hz: "唐",   from: 618,   to: 907 },
+    { name: "Five Dynasties",               hz: "五代", from: 907,   to: 960 },
+    { name: "Song",                          hz: "宋",   from: 960,   to: 1279 },
+    { name: "Yuan",                          hz: "元",   from: 1271,  to: 1368 },
+    { name: "Ming",                          hz: "明",   from: 1368,  to: 1644 },
+    { name: "Qing",                          hz: "清",   from: 1636,  to: 1912 }
+  ];
+
+  /* Year -> horizontal position. The scale is piecewise linear:
+     deep antiquity is squeezed, the modern centuries are given room. */
+  const BRK = [
+    [-1046, 0], [-500, 240], [-221, 420], [0, 560], [500, 760],
+    [900, 1000], [1200, 1240], [1500, 1520], [1700, 1900],
+    [1800, 2200], [1900, 2560], [2000, 2760]
+  ];
+  const BASE_W = 2760;
+
+  const TICKS = [-1046, -750, -500, -300, -221, -100,
+                 1, 200, 400, 600, 800, 900,
+                 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1750,
+                 1800, 1850, 1900, 1950, 2000];
+
+  const ERAS = [
+    { name: "Ancient World", from: -1046, to: 500 },
+    { name: "Medieval",      from: 500,   to: 1500 },
+    { name: "Early Modern",  from: 1500,  to: 1800 },
+    { name: "Modern",        from: 1800,  to: 2000 }
+  ];
+
+  /* Layout constants (pixels at 100%) */
+  const PAD_L = 34, PAD_R = 40;
+  const ERA_H = 40;
+  const PITCH = 42;      /* vertical distance between rows */
+  const PH = 34;         /* plaque height */
+  const AXIS_GAP = 24;   /* gap between axis and nearest Europe row */
+  const TICK_BAND = 50;  /* room for the ruler labels under the axis */
+  const TAIL = 24;
+  const MIN_W = 58, MAX_W = 280;
+  const LANE_GAP = 9;
+
+  const canvas = document.getElementById("canvas");
+  const scroller = document.getElementById("scroller");
+  const scrollWrap = document.getElementById("scrollWrap");
+  const tip = document.getElementById("tip");
+  const zVal = document.getElementById("zVal");
+
+  const ctx = document.createElement("canvas").getContext("2d");
+  const NAME_FONT = '600 12px "Cormorant Garamond", Georgia, serif';
+  const DATE_FONT = '8.5px "Cormorant Garamond", Georgia, serif';
+
+  const ZOOMS = [1, 1.35, 1.7];
+  let zi = 0;
+  let zoom = ZOOMS[zi];
+
+  /* ---------- helpers ---------- */
+  function xOf(year) {
+    if (year <= BRK[0][0]) return BRK[0][1];
+    for (let i = 1; i < BRK.length; i++) {
+      const y1 = BRK[i][0], x1 = BRK[i][1];
+      if (year <= y1) {
+        const y0 = BRK[i - 1][0], x0 = BRK[i - 1][1];
+        return x0 + (year - y0) / (y1 - y0) * (x1 - x0);
+      }
+    }
+    return BRK[BRK.length - 1][1];
+  }
+
+  function textWidth(text, font) {
+    ctx.font = font;
+    return ctx.measureText(text).width;
+  }
+
+  function tickLabel(y) {
+    return y < 0 ? Math.abs(y) + " BC" : "AD " + y;
+  }
+
+  function rangeShort(from, to) {
+    if (to < 0) return Math.abs(from) + "\u2013" + Math.abs(to) + " BC";
+    if (from > 0) return "AD " + from + "\u2013" + to;
+    return Math.abs(from) + " BC \u2013 AD " + to;
+  }
+
+  function rangeLong(from, to) {
+    return tickLabel(from) + " \u2013 " + tickLabel(to);
+  }
+
+  function duration(from, to) {
+    return (to - from).toLocaleString("en-US") + " years";
+  }
+
+  /* Greedy first-fit packing: overlapping plaques get their own row. */
+  function pack(list, side) {
+    const items = list.map(function (d) {
+      const x0 = xOf(d.from);
+      const x1 = xOf(d.to);
+      const tw = Math.max(2, x1 - x0);
+      const label = d.hz ? d.name + " " + d.hz : d.name;
+      const nameW = textWidth(label, NAME_FONT);
+      const dateW = textWidth(rangeShort(d.from, d.to), DATE_FONT);
+      /* widen for legibility, but never shrink a period below its true span */
+      const labelW = Math.max(MIN_W, Math.min(MAX_W, Math.max(nameW, dateW) + 26));
+      const dw = Math.max(tw, labelW);
+      return {
+        name: d.name, hz: d.hz, from: d.from, to: d.to,
+        side: side, x0: x0, x1: x1, tw: tw, dw: dw, lane: 0
+      };
+    });
+
+    items.sort(function (a, b) { return a.x0 - b.x0 || a.tw - b.tw; });
+
+    const laneEnds = [];
+    items.forEach(function (it) {
+      let lane = -1;
+      for (let i = 0; i < laneEnds.length; i++) {
+        if (it.x0 >= laneEnds[i] + LANE_GAP) { lane = i; break; }
+      }
+      if (lane === -1) { lane = laneEnds.length; laneEnds.push(0); }
+      laneEnds[lane] = it.x0 + it.dw;
+      it.lane = lane;
+    });
+
+    return { items: items, lanes: Math.max(1, laneEnds.length) };
+  }
+
+  /* ---------- rendering ---------- */
+  function makePlaque(it, top) {
+    const el = document.createElement("div");
+    el.className = "plaque " + it.side;
+    el.style.left = (PAD_L + it.x0 * zoom) + "px";
+    el.style.top = top + "px";
+    el.style.width = (it.dw * zoom) + "px";
+    el.tabIndex = 0;
+    el.setAttribute("aria-label",
+      it.name + (it.hz ? " (" + it.hz + ")" : "") + ", " +
+      rangeLong(it.from, it.to) + ", " + duration(it.from, it.to));
+
+    const inner = document.createElement("div");
+    inner.className = "pl-inner";
+
+    const name = document.createElement("span");
+    name.className = "pn";
+    name.textContent = it.name;
+    if (it.hz) {
+      const h = document.createElement("em");
+      h.textContent = " " + it.hz;
+      name.appendChild(h);
+    }
+    inner.appendChild(name);
+
+    const dates = document.createElement("span");
+    dates.className = "pd";
+    dates.textContent = rangeShort(it.from, it.to);
+    inner.appendChild(dates);
+
+    el.appendChild(inner);
+
+    if (it.dw - it.tw > 6) {
+      const rule = document.createElement("i");
+      rule.className = "sp";
+      rule.style.width = (it.tw * zoom) + "px";
+      el.appendChild(rule);
+    }
+
+    el.__data = it;
+    return el;
+  }
+
+  function render() {
+    canvas.textContent = "";
+
+    const euro = pack(EUROPE, "eu");
+    const china = pack(CHINA, "cn");
+    const maxE = euro.lanes, maxC = china.lanes;
+
+    const axisY = ERA_H + 14 + (maxE - 1) * PITCH + PH + AXIS_GAP;
+    const chnTop = axisY + TICK_BAND;
+    const height = chnTop + (maxC - 1) * PITCH + PH + TAIL;
+
+    canvas.style.width = (PAD_L + BASE_W * zoom + PAD_R) + "px";
+    canvas.style.height = height + "px";
+
+    const frag = document.createDocumentFragment();
+
+    /* era ribbons */
+    ERAS.forEach(function (era, i) {
+      const band = document.createElement("div");
+      band.className = "era" + (i % 2 ? " alt" : "");
+      band.style.left = (PAD_L + xOf(era.from) * zoom) + "px";
+      band.style.width = ((xOf(era.to) - xOf(era.from)) * zoom) + "px";
+      const label = document.createElement("span");
+      label.textContent = era.name;
+      band.appendChild(label);
+      frag.appendChild(band);
+    });
+
+    /* century gridlines */
+    TICKS.forEach(function (y) {
+      const g = document.createElement("div");
+      g.className = "grid";
+      g.style.left = (PAD_L + xOf(y) * zoom) + "px";
+      g.style.top = ERA_H + "px";
+      g.style.height = (height - ERA_H - 4) + "px";
+      frag.appendChild(g);
+    });
+
+    /* the axis */
+    const axis = document.createElement("div");
+    axis.className = "axis";
+    axis.style.left = PAD_L + "px";
+    axis.style.top = axisY + "px";
+    axis.style.width = (BASE_W * zoom) + "px";
+    frag.appendChild(axis);
+
+    [0, BASE_W].forEach(function (px) {
+      const cap = document.createElement("div");
+      cap.className = "cap";
+      cap.style.left = (PAD_L + px * zoom) + "px";
+      cap.style.top = (axisY - 3) + "px";
+      frag.appendChild(cap);
+    });
+
+    /* ruler */
+    TICKS.forEach(function (y) {
+      const x = PAD_L + xOf(y) * zoom;
+      const t = document.createElement("div");
+      t.className = "tick";
+      t.style.left = x + "px";
+      t.style.top = axisY + "px";
+      frag.appendChild(t);
+
+      const l = document.createElement("span");
+      l.className = "tlabel";
+      l.textContent = tickLabel(y);
+      l.style.left = x + "px";
+      l.style.top = (axisY + 13) + "px";
+      frag.appendChild(l);
+    });
+
+    /* side captions */
+    [["Europe", ERA_H + 18], ["China", chnTop + 4]].forEach(function (pair) {
+      const s = document.createElement("span");
+      s.className = "side";
+      s.textContent = pair[0];
+      s.style.left = "10px";
+      s.style.top = pair[1] + "px";
+      frag.appendChild(s);
+    });
+
+    /* plaques: Europe grows upward, China downward */
+    euro.items.forEach(function (it) {
+      frag.appendChild(makePlaque(it, axisY - AXIS_GAP - PH - it.lane * PITCH));
+    });
+    china.items.forEach(function (it) {
+      frag.appendChild(makePlaque(it, chnTop + it.lane * PITCH));
+    });
+
+    canvas.appendChild(frag);
+    updateEdges();
+  }
+
+  /* keep the right-hand fade honest: it only shows when more river remains */
+  function updateEdges() {
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    scrollWrap.classList.toggle("can-right", scroller.scrollLeft < max - 6);
+  }
+
+  /* ---------- tooltip ---------- */
+  function showTip(el) {
+    const d = el.__data;
+    tip.textContent = "";
+
+    const name = document.createElement("b");
+    name.textContent = d.name + (d.hz ? " " + d.hz : "");
+
+    const when = document.createElement("span");
+    when.textContent = rangeLong(d.from, d.to);
+
+    const meta = document.createElement("em");
+    meta.className = d.side;
+    meta.textContent = duration(d.from, d.to) + " \u00b7 " +
+      (d.side === "eu" ? "Europe, above the line" : "China, below the line");
+
+    tip.appendChild(name);
+    tip.appendChild(when);
+    tip.appendChild(meta);
+
+    const r = el.getBoundingClientRect();
+    tip.classList.add("on");
+    tip.setAttribute("aria-hidden", "false");
+
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    let left = r.left + r.width / 2 - w / 2;
+    left = Math.max(10, Math.min(left, window.innerWidth - w - 10));
+    let top = r.top - h - 12;
+    if (top < 8) top = r.bottom + 12;
+
+    tip.style.left = left + "px";
+    tip.style.top = top + "px";
+  }
+
+  function hideTip() {
+    tip.classList.remove("on");
+    tip.setAttribute("aria-hidden", "true");
+  }
+
+  /* ---------- interactions ---------- */
+  scroller.addEventListener("mouseover", function (e) {
+    const p = e.target.closest(".plaque");
+    if (p) showTip(p);
+  });
+  scroller.addEventListener("mouseout", function (e) {
+    const p = e.target.closest(".plaque");
+    if (p && !p.contains(e.relatedTarget)) hideTip();
+  });
+  scroller.addEventListener("focusin", function (e) {
+    const p = e.target.closest(".plaque");
+    if (p) showTip(p);
+  });
+  scroller.addEventListener("focusout", hideTip);
+  scroller.addEventListener("scroll", function () { hideTip(); updateEdges(); }, { passive: true });
+  window.addEventListener("scroll", hideTip, { passive: true });
+  window.addEventListener("resize", updateEdges);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") hideTip();
+  });
+
+  document.getElementById("zIn").addEventListener("click", function () { setZoom(zi + 1); });
+  document.getElementById("zOut").addEventListener("click", function () { setZoom(zi - 1); });
+
+  function setZoom(next) {
+    next = Math.max(0, Math.min(ZOOMS.length - 1, next));
+    if (next === zi) return;
+
+    /* keep whatever year sits in the middle of the viewport */
+    const ratio = canvas.offsetWidth
+      ? (scroller.scrollLeft + scroller.clientWidth / 2) / canvas.offsetWidth
+      : 0;
+
+    zi = next;
+    zoom = ZOOMS[zi];
+    render();
+    zVal.textContent = Math.round(zoom * 100) + "%";
+    hideTip();
+
+    scroller.scrollLeft = Math.max(0, ratio * canvas.offsetWidth - scroller.clientWidth / 2);
+    updateEdges();
+  }
+
+  /* ---------- boot ---------- */
+  function boot() {
+    const keep = scroller.scrollLeft;
+    render();
+    scroller.scrollLeft = keep;
+    zVal.textContent = Math.round(zoom * 100) + "%";
+    updateEdges();
+  }
+
+  boot();
+
+  /* Re-measure once the web fonts arrive, so plaques fit their labels. */
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(boot);
+  }
+})();
+</script>
+</body>
+</html>
